@@ -13,5 +13,5 @@ class IRoughCarving(Interface):
 
     description = Text(
         title = u"Description",
-        requires = False
+        required = False
         )
