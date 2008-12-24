@@ -27,7 +27,7 @@ class FlintCase(BaseFlint, Container):
 
     def __init__(self, id, **kwargs):
         BaseFlint.__init__(self, id)
-        Container.__init__(self, id, **kwargs):
+        Container.__init__(self, id, **kwargs)
 
 
 class FlintStone(BaseFlint, Item):
@@ -38,4 +38,4 @@ class FlintStone(BaseFlint, Item):
 
     def __init__(self, id, **kwargs):
         BaseFlint.__init__(self, id)
-        Item.__init__(self, id, **kwargs):
+        Item.__init__(self, id, **kwargs)
