@@ -1,8 +1,15 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:grok="http://namespaces.zope.org/grok"
-    i18n_domain="flint">
+xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:grok="http://namespaces.zope.org/grok">
   
+  <browser:page template="templates/toto.pt"
+		permission="zope2.View"
+		class=".forms.toto"
+		name="flint.test"
+		allowed_interface="zope.app.container.interfaces.IAdding"
+		for="zope.app.container.interfaces.IAdding" />
+
   <include package="grokcore.component" file="meta.zcml" />
   <grok:grok package="." />
 

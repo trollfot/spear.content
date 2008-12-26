@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/browser">
+
+    <!-- Adding view -->
+    <page
+	for="Products.CMFCore.interfaces.IFolderish"
+	name="+"
+	class=".carver.FlintCarver"
+	permission="cmf.AddPortalContent"
+        />
+
+</configure>

@@ -23,5 +23,6 @@ class ContentTypeGrokker(martian.ClassGrokker):
             setattr(class_, field.__name__,
                     FieldProperty(schema[field.__name__]))
 
+        print "registering %s %s %s" % (class_, class_.meta_type, require)
         registerClass(config, class_, class_.meta_type, require)
         return True
