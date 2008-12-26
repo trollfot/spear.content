@@ -20,19 +20,12 @@ class BaseFlint(object):
             """You must provide your meta_type"""
             )
 
-    def get_portal_type(self):
-        return getattr("_portal_type", self.meta_type)
-
-    def set_portal_type(self, value):
-        self._portal_type = value
-    
     def getId(self):
         return self.id
 
     def SearchableText(self):
         return getattr(self, "description", u"")
     
-    portal_type = property(get_portal_type, set_portal_type)
 
 
 class FlintCase(BaseFlint, Container):

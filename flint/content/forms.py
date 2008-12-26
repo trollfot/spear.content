@@ -19,14 +19,6 @@ from interfaces import ICarving, IFlintCarver, ICarvingWorkshop
 grok.templatedir("templates")
 
 
-from Products.Five import BrowserView
-class toto(BrowserView):
-    """
-    """
-
-    
-    
-
 class AddFlint(grok.AddForm):
     grok.name("flint.add")
     grok.context(IAdding)
@@ -41,12 +33,12 @@ class AddFlint(grok.AddForm):
                           name=self.context.contentName)
 
     @form.action(_(u"label_save", default=u"Save"))
-    def handle_save_action(self, **data):
+    def handle_save_action(self, action, data):
         obj = self.createAndAdd(data)
-        self.request.response.redirect("")
+        self.request.response.redirect(obj.absolute_url)
     
     @form.action(_(u"label_cancel", default=u"Cancel"))
-    def handle_cancel_action(self, **data):
+    def handle_cancel_action(self, action, data):
         parent = aq_parent(aq_inner(self.context))
         self.request.response.redirect(parent.absolute_url())
 
@@ -60,6 +52,13 @@ class AddFlint(grok.AddForm):
         oid = chooser.chooseName(data['title'], container)
         obj = self.factory(id=oid)
         form.applyChanges(obj, self.form_fields, data)
+        return obj
+
+    def add(self, content):
+        container = aq_parent(aq_inner(self.context))
+        container._setObject(content.id, content)
+        obj = container._getOb(content.id)
+        notify(ObjectModifiedEvent(obj))
         return obj
 
 
@@ -81,7 +80,7 @@ class EditFlint(grok.EditForm):
         return form.FormFields(iface).omit('__parent__')
 
     @form.action(_(u"label_save", default="Save"))
-    def handle_save_action(self, **data):       
+    def handle_save_action(self, action, data):       
         if form.applyChanges(self.context, self.form_fields,
                              data, self.adapters):
             notify(ObjectModifiedEvent(self.context))
