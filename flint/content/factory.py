@@ -3,13 +3,14 @@
 from five import grok
 from directives import schema
 from interfaces import ICarvingWorkshop
+from zope.cachedescriptors.property import CachedProperty
 
 
 class FlintFactory(grok.GlobalUtility):
     grok.baseclass()
     grok.implements(ICarvingWorkshop)
 
-    @property
+    @CachedProperty
     def schema(self):
         context = grok.context.bind().get(self)
         return schema.bind().get(context)

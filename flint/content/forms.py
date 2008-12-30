@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from five import grok
-from OFS.SimpleItem import SimpleItem
 from Acquisition import aq_parent, aq_inner
 from plone.app.form import base as plone
 from Products.CMFPlone import PloneMessageFactory as _
+
+from directives import schema
+from interfaces import ICarving, ICarvingWorkshop
 
 from zope.event import notify
 from zope.formlib import form
@@ -12,8 +14,6 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from zope.component import getMultiAdapter, getUtility
 from zope.app.container.interfaces import INameChooser, IAdding
 
-from directives import schema
-from interfaces import ICarving, ICarvingWorkshop
 
 grok.templatedir("templates")
 
