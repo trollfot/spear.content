@@ -13,6 +13,7 @@ from zope.formlib import form
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.component import getMultiAdapter, getUtility
 from zope.app.container.interfaces import INameChooser, IAdding
+from zope.cachedescriptors.property import CachedProperty
 
 
 grok.templatedir("templates")
@@ -29,10 +30,14 @@ class AddFlint(grok.AddForm):
     def getPhysicalPath(self):
         return self.context.getPhysicalPath()
 
-    @property
+    @CachedProperty
     def factory(self):
         return getUtility(ICarvingWorkshop,
                           name=self.context.contentName)
+
+    @CachedProperty
+    def form_fields(self):
+        return form.FormFields(self.factory.schema).omit('__parent__')
 
     @grok.action(_(u"label_save", default=u"Save"))
     def handle_save_action(self, *args, **data):
@@ -43,10 +48,6 @@ class AddFlint(grok.AddForm):
     def handle_cancel_action(self, *args, **data):
         parent = aq_parent(aq_inner(self.context))
         self.request.response.redirect(parent.absolute_url())
-
-    @property
-    def form_fields(self):
-        return form.FormFields(self.factory.schema).omit('__parent__')
 
     def create(self, data):
         container = aq_parent(aq_inner(self.context))
@@ -69,11 +70,11 @@ class ViewFlint(grok.DisplayForm):
     grok.context(ICarving)
     grok.template("form")
     
-    @property
+    @CachedProperty
     def label(self):
         return self.context.title
 
-    @property
+    @CachedProperty
     def form_fields(self):
         iface = schema.bind().get(self.context)
         return form.FormFields(iface).omit('__parent__')
