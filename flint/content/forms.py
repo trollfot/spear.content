@@ -18,21 +18,6 @@ from interfaces import ICarving, ICarvingWorkshop
 grok.templatedir("templates")
 
 
-class ViewFlint(grok.DisplayForm):    
-    grok.name("base_view")
-    grok.context(ICarving)
-    grok.template("form")
-    
-    @property
-    def label(self):
-        return self.context.title
-
-    @property
-    def form_fields(self):
-        iface = schema.bind().get(self.context)
-        return form.FormFields(iface).omit('__parent__')
-
-
 class AddFlint(grok.AddForm):
     grok.name("flint.add")
     grok.context(IAdding)
@@ -79,9 +64,23 @@ class AddFlint(grok.AddForm):
         return obj
 
 
+class ViewFlint(grok.DisplayForm):    
+    grok.name("base_view")
+    grok.context(ICarving)
+    grok.template("form")
+    
+    @property
+    def label(self):
+        return self.context.title
+
+    @property
+    def form_fields(self):
+        iface = schema.bind().get(self.context)
+        return form.FormFields(iface).omit('__parent__')
+
+
 class EditFlint(ViewFlint):
     grok.name("edit")
-    grok.context(ICarving)
     
     label = u"Edit"
     form_name = u"Edit"
@@ -90,11 +89,6 @@ class EditFlint(ViewFlint):
         notify(plone.EditBegunEvent(self.context))
         super(EditFlint, self).update()
         
-    @property
-    def form_fields(self):
-        iface = schema.bind().get(self.context)
-        return form.FormFields(iface).omit('__parent__')
-
     @form.action(_(u"label_save", default="Save"))
     def handle_save_action(self, action, data):
         if form.applyChanges(self.context, self.form_fields,
