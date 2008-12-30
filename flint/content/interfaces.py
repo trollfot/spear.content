@@ -3,8 +3,8 @@
 from zope.schema import TextLine, Text
 from zope.interface import Interface, Attribute
 from zope.component.interfaces import IFactory
-from zope.app.container.interfaces import IAdding
-from Products.CMFDefault.interfaces import ICMFDefaultSkin
+from zope.app.publisher.interfaces.browser import IBrowserMenu
+from zope.app.publisher.interfaces.browser import IBrowserSubMenuItem
 
 
 class IRoughCarving(Interface):
@@ -31,6 +31,10 @@ class ICarvingWorkshop(IFactory):
     schema = Attribute("Schema interface")
 
 
-class IFlintCarver(ICMFDefaultSkin):
+class ICarvingOptions(IBrowserMenu):
+    """
+    """
+
+class IKnownFlints(IBrowserSubMenuItem):
     """
     """

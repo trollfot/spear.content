@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from five import grok
+from directives import schema
 from zope.interface import implements
-from interfaces import ICarving
+from interfaces import ICarving, IRoughCarving
 from plone.app.content.item import Item
 from plone.app.content.container import Container
 
@@ -10,6 +11,7 @@ from plone.app.content.container import Container
 class BaseFlint(object):
     grok.baseclass()
     implements(ICarving)
+    schema(IRoughCarving)
     
     def __init__(self, id, **kwargs):
         self.id = id
@@ -33,7 +35,7 @@ class FlintCase(BaseFlint, Container):
     Merely a folderish content type.
     """
     grok.baseclass()
-
+    
     def __init__(self, id, **kwargs):
         BaseFlint.__init__(self, id)
 

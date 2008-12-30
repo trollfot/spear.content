@@ -10,7 +10,4 @@ from directives import schema
 from interfaces import IRoughCarving, ICarving
 from base import FlintCase, FlintStone
 from factory import FlintFactory
-import forms
-
-
-
+from forms import AddFlint, EditFlint
