@@ -8,9 +8,9 @@
 </head>
 
 <body>
-<div metal:fill-slot="content">
+<div metal:fill-slot="main">
 
-<div class="documentContent" metal:define-macro="form">
+<div metal:define-macro="form">
 <form action="." metal:define-macro="master"
       tal:attributes="action request/URL;
                       class string:kssattr-formname-${view/__name__}"

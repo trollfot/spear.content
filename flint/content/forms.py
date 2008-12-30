@@ -91,7 +91,6 @@ class EditFlint(grok.EditForm):
         notify(plone.EditBegunEvent(self.context))
         super(EditFlint, self).update()
         
-
     @property
     def form_fields(self):
         iface = schema.bind().get(self.context)
@@ -99,8 +98,6 @@ class EditFlint(grok.EditForm):
 
     @form.action(_(u"label_save", default="Save"))
     def handle_save_action(self, action, data):
-        import pdb
-        pdb.set_trace()
         if form.applyChanges(self.context, self.form_fields,
                              data, self.adapters):
             notify(ObjectModifiedEvent(self.context))
