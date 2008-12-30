@@ -19,7 +19,7 @@ grok.templatedir("templates")
 
 
 class ViewFlint(grok.DisplayForm):    
-    grok.name("view")
+    grok.name("base_view")
     grok.context(ICarving)
     grok.template("form")
     
@@ -36,7 +36,7 @@ class ViewFlint(grok.DisplayForm):
 class AddFlint(grok.AddForm):
     grok.name("flint.add")
     grok.context(IAdding)
-    grok.template("form")
+    grok.template("add")
 
     label = u"Add"
     form_name = u"Add"
@@ -79,10 +79,9 @@ class AddFlint(grok.AddForm):
         return obj
 
 
-class EditFlint(grok.EditForm):
+class EditFlint(ViewFlint):
     grok.name("edit")
     grok.context(ICarving)
-    grok.template("form")
     
     label = u"Edit"
     form_name = u"Edit"

@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<div metal:fill-slot="main">
+<div metal:fill-slot="content">
 
 <div metal:define-macro="form">
 <form action="." metal:define-macro="master"
