@@ -20,10 +20,12 @@ from zope.cachedescriptors.property import CachedProperty
 grok.templatedir("templates")
     
 
-def customized_fields(context, fields, module_name):
+def customized_fields(fields, module_name):
     widgets = widget.bind().get(module=sys.modules[module_name])
-    for field, custom_widget in widgets:
-        fields[field].custom_widget = custom_widget
+    for name, custom_widget in widgets:
+         field = fields.get(name, None)
+         if field is not None:
+            field.custom_widget = custom_widget
     return fields
 
 
@@ -106,9 +108,7 @@ class EditFlint(grok.EditForm):
     def form_fields(self):
         iface = schema.bind().get(self.context)
         fields = form.FormFields(iface).omit('__parent__')
-        import pdb
-        pdb.set_trace()
-        return customized_fields(self, fields, self.context.__module__)
+        return customized_fields(fields, self.context.__module__)
 
     def update(self):
         notify(plone.EditBegunEvent(self.context))
