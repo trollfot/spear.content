@@ -83,6 +83,7 @@ class ViewFlint(grok.DisplayForm):
     grok.name("base_view")
     grok.context(ICarving)
     grok.template("form")
+    grok.require("zope2.View")
 
     @CachedProperty
     def label(self):
@@ -99,6 +100,7 @@ class EditFlint(grok.EditForm):
     grok.name("edit")
     grok.context(ICarving)
     grok.template("form")
+    grok.require("cmf.ModifyPortalContent")
 
     label = u"Edit"
     form_name = u"Edit"
