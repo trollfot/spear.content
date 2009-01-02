@@ -6,7 +6,7 @@ except ImportError:
 
 
 import grokker
-from directives import schema
+from directives import *
 from interfaces import IRoughCarving, ICarving
 from base import FlintCase, FlintStone
 from factory import FlintFactory

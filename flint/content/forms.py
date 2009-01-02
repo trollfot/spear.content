@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from five import grok
 from Acquisition import aq_parent, aq_inner
 from plone.app.form import base as plone
 from Products.CMFPlone import PloneMessageFactory as _
 
-from directives import schema
+from directives import schema, widget
 from interfaces import ICarving, ICarvingWorkshop
 
 from zope.event import notify
@@ -17,6 +18,13 @@ from zope.cachedescriptors.property import CachedProperty
 
 
 grok.templatedir("templates")
+    
+
+def customized_fields(context, fields, module_name):
+    widgets = widget.bind().get(module=sys.modules[module_name])
+    for field, custom_widget in widgets:
+        fields[field].custom_widget = custom_widget
+    return fields
 
 
 class AddFlint(grok.AddForm):
@@ -31,20 +39,21 @@ class AddFlint(grok.AddForm):
         return self.context.getPhysicalPath()
 
     @CachedProperty
-    def factory(self):
+    def carver(self):
         return getUtility(ICarvingWorkshop,
                           name=self.context.contentName)
 
     @CachedProperty
     def form_fields(self):
-        return form.FormFields(self.factory.schema).omit('__parent__')
+        fields = form.FormFields(self.carver.schema).omit('__parent__')
+        return customized_fields(fields, self.carver.factory.__module__)
 
     @grok.action(_(u"label_save", default=u"Save"))
     def handle_save_action(self, *args, **data):
         obj = self.createAndAdd(data)
         self.request.response.redirect(obj.absolute_url())
     
-    @form.action(_(u"label_cancel", default=u"Cancel"))
+    @grok.action(_(u"label_cancel", default=u"Cancel"))
     def handle_cancel_action(self, *args, **data):
         parent = aq_parent(aq_inner(self.context))
         self.request.response.redirect(parent.absolute_url())
@@ -53,7 +62,7 @@ class AddFlint(grok.AddForm):
         container = aq_parent(aq_inner(self.context))
         chooser = INameChooser(container)
         oid = chooser.chooseName(data['title'], container)
-        obj = self.factory(id=oid)
+        obj = self.carver(id=oid)
         form.applyChanges(obj, self.form_fields, data)
         return obj
 
@@ -65,11 +74,11 @@ class AddFlint(grok.AddForm):
         return obj
 
 
-class ViewFlint(grok.DisplayForm):    
+class ViewFlint(grok.DisplayForm):
     grok.name("base_view")
     grok.context(ICarving)
     grok.template("form")
-    
+
     @CachedProperty
     def label(self):
         return self.context.title
@@ -77,20 +86,35 @@ class ViewFlint(grok.DisplayForm):
     @CachedProperty
     def form_fields(self):
         iface = schema.bind().get(self.context)
-        return form.FormFields(iface).omit('__parent__')
+        fields = form.FormFields(iface).omit('__parent__')
+        return customized_fields(fields, self.context.__module__)
 
 
-class EditFlint(ViewFlint):
+class EditFlint(grok.EditForm):
     grok.name("edit")
-    
+    grok.context(ICarving)
+    grok.template("form")
+
     label = u"Edit"
     form_name = u"Edit"
+
+    @CachedProperty
+    def label(self):
+        return self.context.title
+
+    @property
+    def form_fields(self):
+        iface = schema.bind().get(self.context)
+        fields = form.FormFields(iface).omit('__parent__')
+        import pdb
+        pdb.set_trace()
+        return customized_fields(self, fields, self.context.__module__)
 
     def update(self):
         notify(plone.EditBegunEvent(self.context))
         super(EditFlint, self).update()
         
-    @form.action(_(u"label_save", default="Save"))
+    @grok.action(_(u"label_save", default="Save"))
     def handle_save_action(self, action, data):
         if form.applyChanges(self.context, self.form_fields,
                              data, self.adapters):

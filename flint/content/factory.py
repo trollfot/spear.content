@@ -15,6 +15,9 @@ class FlintFactory(grok.GlobalUtility):
         context = grok.context.bind().get(self)
         return schema.bind().get(context)
 
+    @CachedProperty
+    def factory(self):
+        return grok.context.bind().get(self)
+
     def __call__(self, *args, **kw):
-        class_ = grok.context.bind().get(self)
-        return class_(*args, **kw)
+        return self.factory(*args, **kw)
