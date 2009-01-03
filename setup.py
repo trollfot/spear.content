@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from os.path import join
 
-name = 'flint.content'
+name = 'spear.content'
 path = name.split('.') + ['version.txt']
 version = open(join(*path)).read().strip()
 readme = open("README.txt").read()
@@ -15,10 +15,10 @@ setup(name = name,
       author = 'Souheil Chelfouh',
       author_email = 'trollfot@gmail.com',
       url = 'http://tracker.trollfot.org',
-      download_url = 'http://pypi.python.org/pypi/flint.content',
+      download_url = 'http://pypi.python.org/pypi/spear.content',
       license = 'GPL',
       packages = find_packages(),
-      namespace_packages = ['flint'],
+      namespace_packages = ['spear'],
       include_package_data = True,
       platforms = 'Any',
       zip_safe = False,
