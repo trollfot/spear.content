@@ -28,7 +28,7 @@ class BaseSpear(object):
     
 
 
-class SpearQuiver(BaseFlint, Container):
+class SpearQuiver(BaseSpear, Container):
     """ A case to store your spears.
     Merely a folderish content type.
     """
@@ -38,7 +38,7 @@ class SpearQuiver(BaseFlint, Container):
         BaseSpear.__init__(self, id)
 
 
-class FlintSpear(BaseFlint, Item):
+class FlintSpear(BaseSpear, Item):
     """A spear with a flint head.
     Explictly, a contentish type.
     """

@@ -6,7 +6,7 @@ except ImportError:
 
 
 import grokker
-from directives import *
+from directives import schema, widget
 from interfaces import IRoughCarving, ICarving
 from base import SpearQuiver, FlintSpear
 from factory import SpearFactory

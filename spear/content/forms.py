@@ -50,7 +50,7 @@ class AddSpear(grok.AddForm):
 
     @CachedProperty
     def form_fields(self):
-        fields = form.FormFields(self.carver.schema).omit('__parent__')
+        fields = form.FormFields(*self.carver.schema).omit('__parent__')
         return customized_fields(fields, self.carver.factory.__module__)
 
     @grok.action(_(u"label_save", default=u"Save"))
@@ -92,7 +92,7 @@ class ViewSpear(grok.DisplayForm):
     @CachedProperty
     def form_fields(self):
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(iface).omit('__parent__')
+        fields = form.FormFields(*iface).omit('__parent__')
         return customized_fields(fields, self.context.__module__)
 
 
@@ -112,7 +112,7 @@ class EditSpear(grok.EditForm):
     @property
     def form_fields(self):
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(iface).omit('__parent__')
+        fields = form.FormFields(*iface).omit('__parent__')
         return customized_fields(fields, self.context.__module__)
 
     def update(self):
