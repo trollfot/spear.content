@@ -8,7 +8,7 @@ from plone.app.content.item import Item
 from plone.app.content.container import Container
 
 
-class BaseFlint(object):
+class BaseSpear(object):
     grok.baseclass()
     implements(ICarving)
     schema(IRoughCarving)
@@ -18,9 +18,7 @@ class BaseFlint(object):
 
     @property
     def meta_type(self):
-        return NotImplementedError(
-            """You must provide your meta_type"""
-            )
+        return NotImplementedError("""You must provide your meta_type""")
 
     def getId(self):
         return self.id
@@ -30,21 +28,21 @@ class BaseFlint(object):
     
 
 
-class FlintCase(BaseFlint, Container):
-    """A case to store your flints.
+class SpearQuiver(BaseFlint, Container):
+    """ A case to store your spears.
     Merely a folderish content type.
     """
     grok.baseclass()
     
     def __init__(self, id, **kwargs):
-        BaseFlint.__init__(self, id)
+        BaseSpear.__init__(self, id)
 
 
-class FlintStone(BaseFlint, Item):
-    """A simple flint stone.
-    More simply, a contentish type.
+class FlintSpear(BaseFlint, Item):
+    """A spear with a flint head.
+    Explictly, a contentish type.
     """
     grok.baseclass()
 
     def __init__(self, id, **kwargs):
-        BaseFlint.__init__(self, id)
+        BaseSpear.__init__(self, id)

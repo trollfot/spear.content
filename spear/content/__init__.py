@@ -8,6 +8,6 @@ except ImportError:
 import grokker
 from directives import *
 from interfaces import IRoughCarving, ICarving
-from base import FlintCase, FlintStone
-from factory import FlintFactory
-from forms import AddFlint, EditFlint
+from base import SpearQuiver, FlintSpear
+from factory import SpearFactory
+from forms import AddSpear, EditSpear

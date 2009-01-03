@@ -32,8 +32,8 @@ def customized_fields(fields, module_name):
     return fields
 
 
-class AddFlint(grok.AddForm):
-    grok.name("flint.add")
+class AddSpear(grok.AddForm):
+    grok.name("spear.add")
     grok.context(IAdding)
     grok.template("add")
 
@@ -79,7 +79,7 @@ class AddFlint(grok.AddForm):
         return obj
 
 
-class ViewFlint(grok.DisplayForm):
+class ViewSpear(grok.DisplayForm):
     grok.name("base_view")
     grok.context(ICarving)
     grok.template("form")
@@ -96,7 +96,7 @@ class ViewFlint(grok.DisplayForm):
         return customized_fields(fields, self.context.__module__)
 
 
-class EditFlint(grok.EditForm):
+class EditSpear(grok.EditForm):
     grok.name("edit")
     grok.context(ICarving)
     grok.template("form")
@@ -117,7 +117,7 @@ class EditFlint(grok.EditForm):
 
     def update(self):
         notify(plone.EditBegunEvent(self.context))
-        super(EditFlint, self).update()
+        super(EditSpear, self).update()
         
     @grok.action(_(u"label_save", default="Save"))
     def handle_save_action(self, action, data):

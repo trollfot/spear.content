@@ -6,7 +6,7 @@ from interfaces import ICarvingWorkshop
 from zope.cachedescriptors.property import CachedProperty
 
 
-class FlintFactory(grok.GlobalUtility):
+class SpearFactory(grok.GlobalUtility):
     grok.baseclass()
     grok.implements(ICarvingWorkshop)
 
