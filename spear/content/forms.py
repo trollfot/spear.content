@@ -2,17 +2,19 @@
 
 import sys
 from five import grok
-from Acquisition import aq_parent, aq_inner
 from plone.app.form import base as plone
+from Acquisition import aq_parent, aq_inner
 from Products.CMFPlone import PloneMessageFactory as _
 
+import interfaces as spear
+from utils import lookupForSpear
 from directives import schema, widget
-from interfaces import ICarving, ICarvingWorkshop
 
 from zope.event import notify
 from zope.formlib import form
+from zope.interface import implements
 from zope.lifecycleevent import ObjectModifiedEvent
-from zope.component import getMultiAdapter, getUtility
+from zope.component import getMultiAdapter, queryMultiAdapter, getUtility
 from zope.app.container.interfaces import INameChooser, IAdding
 from zope.cachedescriptors.property import CachedProperty
 
@@ -36,6 +38,7 @@ class AddSpear(grok.AddForm):
     grok.name("spear.add")
     grok.context(IAdding)
     grok.template("add")
+    implements(spear.IAddSpear)
 
     label = u"Add"
     form_name = u"Add"
@@ -45,12 +48,16 @@ class AddSpear(grok.AddForm):
 
     @CachedProperty
     def carver(self):
-        return getUtility(ICarvingWorkshop,
+        return getUtility(spear.ICarvingWorkshop,
                           name=self.context.contentName)
 
     @CachedProperty
     def form_fields(self):
-        fields = form.FormFields(*self.carver.schema).omit('__parent__')
+        remove = ['__parent__']
+        hide = lookupForSpear((self.carver.factory, self), spear.IPruning)
+        if hide is not None:
+            remove = remove + hide.omit
+        fields = form.FormFields(*self.carver.schema).omit(*remove)
         return customized_fields(fields, self.carver.factory.__module__)
 
     @grok.action(_(u"label_save", default=u"Save"))
@@ -66,9 +73,10 @@ class AddSpear(grok.AddForm):
     def create(self, data):
         container = aq_parent(aq_inner(self.context))
         chooser = INameChooser(container)
-        oid = chooser.chooseName(data['title'], container)
-        obj = self.carver(id=oid)
+        obj = self.carver(id=u"temporary")
         form.applyChanges(obj, self.form_fields, data)
+        oid = chooser.chooseName(obj.title, container)
+        obj.id = oid
         return obj
 
     def add(self, content):
@@ -81,9 +89,10 @@ class AddSpear(grok.AddForm):
 
 class ViewSpear(grok.DisplayForm):
     grok.name("base_view")
-    grok.context(ICarving)
+    grok.context(spear.ICarving)
     grok.template("form")
     grok.require("zope2.View")
+    implements(spear.IViewSpear)
 
     @CachedProperty
     def label(self):
@@ -91,16 +100,21 @@ class ViewSpear(grok.DisplayForm):
 
     @CachedProperty
     def form_fields(self):
+        remove = ['__parent__']
+        hide = queryMultiAdapter((self.context, self), spear.IPruning)
+        if hide is not None:
+            remove = remove + hide.omit
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(*iface).omit('__parent__')
+        fields = form.FormFields(*iface).omit(*remove)
         return customized_fields(fields, self.context.__module__)
 
 
 class EditSpear(grok.EditForm):
     grok.name("edit")
-    grok.context(ICarving)
+    grok.context(spear.ICarving)
     grok.template("form")
     grok.require("cmf.ModifyPortalContent")
+    implements(spear.IEditSpear)
 
     label = u"Edit"
     form_name = u"Edit"
@@ -111,8 +125,12 @@ class EditSpear(grok.EditForm):
 
     @property
     def form_fields(self):
+        remove = ['__parent__']
+        hide = queryMultiAdapter((self.context, self), spear.IPruning)
+        if hide is not None:
+            remove = remove + hide.omit
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(*iface).omit('__parent__')
+        fields = form.FormFields(*iface).omit(*remove)
         return customized_fields(fields, self.context.__module__)
 
     def update(self):

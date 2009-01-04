@@ -27,3 +27,25 @@ class ICarving(Interface):
 
 class ICarvingWorkshop(IFactory):
     schema = Attribute("Schema interface")
+    factory = Attribute("Class used as a factory")
+
+
+class IPruning(Interface):
+    omit = Attribute("Fields to remove from the form.")
+
+
+class IAddSpear(Interface):
+    """Marker interface.
+    """
+
+class IViewSpear(Interface):
+    """Marker interface.
+    """
+
+class IEditSpear(Interface):
+    """Marker interface.
+    """
+
+
+__all__ = ['IRoughCarving', 'ICarving', 'ICarvingWorkshop',
+           'IPruning', 'IAddSpear', 'IViewSpear', 'IEditSpear']
