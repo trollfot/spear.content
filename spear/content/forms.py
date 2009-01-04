@@ -118,9 +118,13 @@ class EditSpear(grok.EditForm):
     def update(self):
         notify(plone.EditBegunEvent(self.context))
         super(EditSpear, self).update()
+
+    @grok.action(_(u"label_cancel", default=u"Cancel"))
+    def handle_cancel_action(self, *args, **data):
+        self.request.response.redirect(self.context.absolute_url())
         
     @grok.action(_(u"label_save", default="Save"))
-    def handle_save_action(self, action, data):
+    def handle_save_action(self, *args, **data):
         if form.applyChanges(self.context, self.form_fields,
                              data, self.adapters):
             notify(ObjectModifiedEvent(self.context))

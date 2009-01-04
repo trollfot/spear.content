@@ -29,6 +29,5 @@ class ContentTypeGrokker(martian.ClassGrokker):
             if not iface.providedBy(class_):
                 classImplements(class_, iface)
 
-        print "registering %s %s %s" % (class_, class_.meta_type, require)
         registerClass(config, class_, class_.meta_type, require)
         return True
