@@ -4,6 +4,7 @@ import martian
 from zope.interface import Interface
 from zope.schema.interfaces import IField
 from zope.app.form.browser.interfaces import IBrowserWidget
+from zope.app.form import CustomWidgetFactory
 
 
 def validateWidget(directive, *values):
@@ -19,7 +20,8 @@ def validateWidget(directive, *values):
                 "%s directive takes a IField as first argument."
                 "Please check the provided elements" % directive.name)
         
-    if not IBrowserWidget.implementedBy(widget):
+    if (not IBrowserWidget.implementedBy(widget) and
+        not isinstance(widget, CustomWidgetFactory)):
         raise martian.error.GrokImportError(
                 "%s directive takes a IWidget as second argument."
                 "Please check the provided elements" % directive.name)

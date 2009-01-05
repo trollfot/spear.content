@@ -116,7 +116,6 @@ class EditSpear(grok.EditForm):
     grok.require("cmf.ModifyPortalContent")
     implements(spear.IEditSpear)
 
-    label = u"Edit"
     form_name = u"Edit"
 
     @CachedProperty
