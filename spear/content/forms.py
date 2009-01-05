@@ -26,7 +26,9 @@ def customized_fields(fields, module_name):
     widgets = widget.bind().get(module=sys.modules[module_name])
     for field, custom_widget in widgets:
         formfield = fields.get(field.__name__, None)
-        if formfield.field is not field or field is None:
+        if formfield is None:
+            continue
+        if formfield and formfield.field is not field or field is None:
             raise AttributeError("Wrong schema interface customized "
                                  "in module %s. Field '%s' does not "
                                  "exist" % (module_name, field.__name__))

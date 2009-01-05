@@ -21,9 +21,9 @@ class ContentTypeGrokker(martian.ClassGrokker):
 
         formfields = form.FormFields(*schema)
         for formfield in formfields:
-            if not hasattr(class_, formfield.__name__):
-                setattr(class_, formfield.__name__,
-                        FieldProperty(formfield.field))
+            name = formfield.__name__
+            if not hasattr(class_, name):
+                setattr(class_, name, FieldProperty(formfield.field))
 
         for iface in schema:
             if not iface.providedBy(class_):
