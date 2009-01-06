@@ -6,8 +6,8 @@ except ImportError:
 
 
 import grokker
-from directives import schema, widget
+from directives import schema
 from interfaces import *
 from base import SpearQuiver, FlintSpear
 from factory import SpearFactory
-from forms import AddSpear, EditSpear
+from forms import AddSpear, EditSpear, ViewSpear, CustomSpear

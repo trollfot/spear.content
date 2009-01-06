@@ -4,7 +4,7 @@ from zope.interface import implementedBy, providedBy
 from zope import component
 
 
-def lookupForSpear(adapts, interface, name=u''):
+def queryClassMultiAdapter(adapts, interface, name=u''):
     sm = component.getGlobalSiteManager()
     klass = adapts[0]
     required = implementedBy(klass)

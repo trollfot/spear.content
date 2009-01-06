@@ -2,29 +2,6 @@
 
 import martian
 from zope.interface import Interface
-from zope.schema.interfaces import IField
-from zope.app.form.browser.interfaces import IBrowserWidget
-from zope.app.form import CustomWidgetFactory
-
-
-def validateWidget(directive, *values):
-    if len(values) != 2:
-        raise martian.error.GrokImportError(
-                "%s directive must be given a field and a widget"
-                % directive.name)
-    
-    field, widget = values
-    
-    if not IField.providedBy(field):
-        raise martian.error.GrokImportError(
-                "%s directive takes a IField as first argument."
-                "Please check the provided elements" % directive.name)
-        
-    if (not IBrowserWidget.implementedBy(widget) and
-        not isinstance(widget, CustomWidgetFactory)):
-        raise martian.error.GrokImportError(
-                "%s directive takes a IWidget as second argument."
-                "Please check the provided elements" % directive.name)
 
 
 def validateSchema(directive, *ifaces):
@@ -43,11 +20,3 @@ class schema(martian.Directive):
 
     def factory(self, *schemas):
         return list(schemas)
-
-
-class widget(martian.MultipleTimesDirective):
-    scope = martian.MODULE
-    validate = validateWidget
-
-    def factory(self, attr, widget):
-        return (attr, widget)

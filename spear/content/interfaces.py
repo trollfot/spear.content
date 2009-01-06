@@ -30,11 +30,20 @@ class ICarvingWorkshop(IFactory):
     factory = Attribute("Class used as a factory")
 
 
-class IPruning(Interface):
-    omit = Attribute("Fields to remove from the form.")
+class ICustomCarving(Interface):
+    def generate_form_fields(fields=None):
+        """returns a filtered and customized instance of FormFields.
+        """
 
+class ISpearForm(Interface):
+    """Marks the forms that alter contents.
+    """
 
-class IAddSpear(Interface):
+class IAddSpear(ISpearForm):
+    """Marker interface.
+    """
+
+class IEditSpear(ISpearForm):
     """Marker interface.
     """
 
@@ -42,10 +51,5 @@ class IViewSpear(Interface):
     """Marker interface.
     """
 
-class IEditSpear(Interface):
-    """Marker interface.
-    """
-
-
-__all__ = ['IRoughCarving', 'ICarving', 'ICarvingWorkshop',
-           'IPruning', 'IAddSpear', 'IViewSpear', 'IEditSpear']
+__all__ = ['IRoughCarving', 'ICarving', 'ICarvingWorkshop', 'ISpearForm',
+           'ICustomCarving', 'IAddSpear', 'IViewSpear', 'IEditSpear']

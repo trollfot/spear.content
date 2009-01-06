@@ -3,16 +3,17 @@
 import sys
 from five import grok
 from plone.app.form import base as plone
+from plone.app.form.validators import null_validator
 from Acquisition import aq_parent, aq_inner
 from Products.CMFPlone import PloneMessageFactory as _
 
 import interfaces as spear
-from utils import lookupForSpear
-from directives import schema, widget
+from utils import queryClassMultiAdapter
+from directives import schema
 
 from zope.event import notify
 from zope.formlib import form
-from zope.interface import implements
+from zope.interface import Interface, implements
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.component import getMultiAdapter, queryMultiAdapter, getUtility
 from zope.app.container.interfaces import INameChooser, IAdding
@@ -22,18 +23,21 @@ from zope.cachedescriptors.property import CachedProperty
 grok.templatedir("templates")
     
 
-def customized_fields(fields, module_name):
-    widgets = widget.bind().get(module=sys.modules[module_name])
-    for field, custom_widget in widgets:
-        formfield = fields.get(field.__name__, None)
-        if formfield is None:
-            continue
-        if formfield and formfield.field is not field or field is None:
-            raise AttributeError("Wrong schema interface customized "
-                                 "in module %s. Field '%s' does not "
-                                 "exist" % (module_name, field.__name__))
-        formfield.custom_widget = custom_widget
-    return fields
+class CustomSpear(grok.MultiAdapter):
+    grok.adapts(Interface, grok.Form)
+    grok.provides(spear.ICustomCarving)
+    grok.baseclass()
+
+    def __init__(self, context, form):
+        self.form = form
+        self.context = context
+
+    def omit(self):
+        return []
+
+    def generate_form_fields(self, fields=None):
+        remove = self.omit()
+        return fields.omit(*remove)
 
 
 class AddSpear(grok.AddForm):
@@ -55,19 +59,18 @@ class AddSpear(grok.AddForm):
 
     @CachedProperty
     def form_fields(self):
-        remove = ['__parent__']
-        hide = lookupForSpear((self.carver.factory, self), spear.IPruning)
-        if hide is not None:
-            remove = remove + hide.omit
-        fields = form.FormFields(*self.carver.schema).omit(*remove)
-        return customized_fields(fields, self.carver.factory.__module__)
+        fields = form.FormFields(*self.carver.schema).omit("__parent__")
+        custom = queryClassMultiAdapter((self.carver.factory, self),
+                                        spear.ICustomCarving)
+        return custom and custom.generate_form_fields(fields) or fields
 
     @grok.action(_(u"label_save", default=u"Save"))
     def handle_save_action(self, *args, **data):
         obj = self.createAndAdd(data)
         self.request.response.redirect(obj.absolute_url())
     
-    @grok.action(_(u"label_cancel", default=u"Cancel"))
+    @grok.action(_(u"label_cancel", default=u"Cancel"),
+                 validator=null_validator, name=u'cancel')
     def handle_cancel_action(self, *args, **data):
         parent = aq_parent(aq_inner(self.context))
         self.request.response.redirect(parent.absolute_url())
@@ -102,13 +105,10 @@ class ViewSpear(grok.DisplayForm):
 
     @CachedProperty
     def form_fields(self):
-        remove = ['__parent__']
-        hide = queryMultiAdapter((self.context, self), spear.IPruning)
-        if hide is not None:
-            remove = remove + hide.omit
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(*iface).omit(*remove)
-        return customized_fields(fields, self.context.__module__)
+        fields = form.FormFields(*iface).omit("__parent__")
+        custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
+        return custom and custom.generate_form_fields(fields) or fields
 
 
 class EditSpear(grok.EditForm):
@@ -126,19 +126,17 @@ class EditSpear(grok.EditForm):
 
     @property
     def form_fields(self):
-        remove = ['__parent__']
-        hide = queryMultiAdapter((self.context, self), spear.IPruning)
-        if hide is not None:
-            remove = remove + hide.omit
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(*iface).omit(*remove)
-        return customized_fields(fields, self.context.__module__)
+        fields = form.FormFields(*iface).omit("__parent__")
+        custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
+        return custom and custom.generate_form_fields(fields) or fields
 
     def update(self):
         notify(plone.EditBegunEvent(self.context))
         super(EditSpear, self).update()
 
-    @grok.action(_(u"label_cancel", default=u"Cancel"))
+    @grok.action(_(u"label_cancel", default=u"Cancel"),
+                 validator=null_validator, name=u'cancel')
     def handle_cancel_action(self, *args, **data):
         self.request.response.redirect(self.context.absolute_url())
         
