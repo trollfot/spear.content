@@ -35,21 +35,32 @@ class ICustomCarving(Interface):
         """returns a filtered and customized instance of FormFields.
         """
 
+
+class ISpearFieldUpdate(Interface):
+    field = Attribute("The field that has been updated.")
+    object = Attribute("The field context.")
+    
+
 class ISpearForm(Interface):
     """Marks the forms that alter contents.
     """
+
 
 class IAddSpear(ISpearForm):
     """Marker interface.
     """
 
+
 class IEditSpear(ISpearForm):
     """Marker interface.
     """
+
 
 class IViewSpear(Interface):
     """Marker interface.
     """
 
+
 __all__ = ['IRoughCarving', 'ICarving', 'ICarvingWorkshop', 'ISpearForm',
-           'ICustomCarving', 'IAddSpear', 'IViewSpear', 'IEditSpear']
+           'ICustomCarving', 'IAddSpear', 'IViewSpear', 'IEditSpear',
+           'ISpearFieldUpdate']

@@ -5,9 +5,11 @@ except ImportError:
     __path__ = extend_path(__path__, __name__)
 
 
-import grokker
-from directives import schema
-from interfaces import *
-from base import SpearQuiver, FlintSpear
-from factory import SpearFactory
-from forms import AddSpear, EditSpear, ViewSpear, CustomSpear
+from spear.content.interfaces import *
+from spear.content.adapter import SubscriptionAdapter, CustomSpear
+from spear.content import grokker, utils
+from spear.content.directives import schema
+from spear.content.factory import SpearFactory
+from spear.content.base import SpearQuiver, FlintSpear
+from spear.content.forms import AddSpear, EditSpear, ViewSpear
+

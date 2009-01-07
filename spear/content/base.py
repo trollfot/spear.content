@@ -27,7 +27,6 @@ class BaseSpear(object):
         return getattr(self, "description", u"")
     
 
-
 class SpearQuiver(BaseSpear, Container):
     """ A case to store your spears.
     Merely a folderish content type.

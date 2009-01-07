@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import sys
 from five import grok
 from plone.app.form import base as plone
 from plone.app.form.validators import null_validator
 from Acquisition import aq_parent, aq_inner
 from Products.CMFPlone import PloneMessageFactory as _
 
+import utils
 import interfaces as spear
 from utils import queryClassMultiAdapter
 from directives import schema
@@ -21,23 +21,6 @@ from zope.cachedescriptors.property import CachedProperty
 
 
 grok.templatedir("templates")
-    
-
-class CustomSpear(grok.MultiAdapter):
-    grok.adapts(Interface, grok.Form)
-    grok.provides(spear.ICustomCarving)
-    grok.baseclass()
-
-    def __init__(self, context, form):
-        self.form = form
-        self.context = context
-
-    def omit(self):
-        return []
-
-    def generate_form_fields(self, fields=None):
-        remove = self.omit()
-        return fields.omit(*remove)
 
 
 class AddSpear(grok.AddForm):
@@ -46,11 +29,14 @@ class AddSpear(grok.AddForm):
     grok.template("add")
     implements(spear.IAddSpear)
 
-    label = u"Add"
-    form_name = u"Add"
+    form_name = _(u"Add")
 
     def getPhysicalPath(self):
         return self.context.getPhysicalPath()
+
+    @CachedProperty
+    def label(self):
+        return self.carver.factory.portal_type
 
     @CachedProperty
     def carver(self):
@@ -59,9 +45,9 @@ class AddSpear(grok.AddForm):
 
     @CachedProperty
     def form_fields(self):
-        fields = form.FormFields(*self.carver.schema).omit("__parent__")
-        custom = queryClassMultiAdapter((self.carver.factory, self),
-                                        spear.ICustomCarving)
+        fields = form.FormFields(*self.carver.schema)
+        custom = utils.queryClassMultiAdapter((self.carver.factory, self),
+                                              spear.ICustomCarving)
         return custom and custom.generate_form_fields(fields) or fields
 
     @grok.action(_(u"label_save", default=u"Save"))
@@ -79,7 +65,7 @@ class AddSpear(grok.AddForm):
         container = aq_parent(aq_inner(self.context))
         chooser = INameChooser(container)
         obj = self.carver(id=u"temporary")
-        form.applyChanges(obj, self.form_fields, data)
+        utils.applyChanges(obj, self.form_fields, data)
         oid = chooser.chooseName(obj.title, container)
         obj.id = oid
         return obj
@@ -106,7 +92,7 @@ class ViewSpear(grok.DisplayForm):
     @CachedProperty
     def form_fields(self):
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(*iface).omit("__parent__")
+        fields = form.FormFields(*iface)
         custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
         return custom and custom.generate_form_fields(fields) or fields
 
@@ -118,7 +104,7 @@ class EditSpear(grok.EditForm):
     grok.require("cmf.ModifyPortalContent")
     implements(spear.IEditSpear)
 
-    form_name = u"Edit"
+    form_name = _(u"Edit")
 
     @CachedProperty
     def label(self):
@@ -127,7 +113,7 @@ class EditSpear(grok.EditForm):
     @property
     def form_fields(self):
         iface = schema.bind().get(self.context)
-        fields = form.FormFields(*iface).omit("__parent__")
+        fields = form.FormFields(*iface)
         custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
         return custom and custom.generate_form_fields(fields) or fields
 
@@ -142,14 +128,14 @@ class EditSpear(grok.EditForm):
         
     @grok.action(_(u"label_save", default="Save"))
     def handle_save_action(self, *args, **data):
-        if form.applyChanges(self.context, self.form_fields,
-                             data, self.adapters):
+        if utils.applyChanges(self.context, self.form_fields,
+                        data, self.adapters):
             notify(ObjectModifiedEvent(self.context))
             notify(plone.EditSavedEvent(self.context))
-            self.status = "Changes saved"
+            self.status = _(u"Changes saved")
         else:
             notify(plone.EditCancelledEvent(self.context))
-            self.status = "No changes"
+            self.status = _(u"No changes")
             
         url = getMultiAdapter((self.context, self.request),
                               name='absolute_url')()
