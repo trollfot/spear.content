@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from five import grok
-from directives import schema
 from zope.interface import implements
-from interfaces import ICarving, IRoughCarving
 from plone.app.content.item import Item
 from plone.app.content.container import Container
+
+from directives import schema
+from interfaces import ICarving, IRoughCarving
 
 
 class BaseSpear(object):
