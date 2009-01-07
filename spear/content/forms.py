@@ -13,7 +13,7 @@ from directives import schema
 
 from zope.event import notify
 from zope.formlib import form
-from zope.interface import Interface, implements
+from zope.interface import implements
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.component import getMultiAdapter, queryMultiAdapter, getUtility
 from zope.app.container.interfaces import INameChooser, IAdding

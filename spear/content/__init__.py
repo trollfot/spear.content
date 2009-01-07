@@ -7,8 +7,8 @@ except ImportError:
 
 from spear.content.interfaces import *
 from spear.content.adapter import SubscriptionAdapter, CustomSpear
-from spear.content import grokker, utils
 from spear.content.directives import schema
+from spear.content import grokker, utils
 from spear.content.factory import SpearFactory
 from spear.content.base import SpearQuiver, FlintSpear
 from spear.content.forms import AddSpear, EditSpear, ViewSpear
