@@ -81,7 +81,7 @@ class AddSpear(grok.AddForm):
 class ViewSpear(grok.DisplayForm):
     grok.name("base_view")
     grok.context(spear.ICarving)
-    grok.template("form")
+    grok.template("view")
     grok.require("zope2.View")
     implements(spear.IViewSpear)
 
@@ -94,13 +94,13 @@ class ViewSpear(grok.DisplayForm):
         iface = schema.bind().get(self.context)
         fields = form.FormFields(*iface)
         custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
-        return custom and custom.generate_form_fields(fields) or fields
+        return custom and custom.generate_form_fields(fields) or fields.omit('title')
 
 
 class EditSpear(grok.EditForm):
     grok.name("edit")
     grok.context(spear.ICarving)
-    grok.template("form")
+    grok.template("edit")
     grok.require("cmf.ModifyPortalContent")
     implements(spear.IEditSpear)
 
@@ -108,7 +108,7 @@ class EditSpear(grok.EditForm):
 
     @CachedProperty
     def label(self):
-        return self.context.title
+        return "%s: %s" % (_(u"Edit"), self.context.title)
 
     @property
     def form_fields(self):
