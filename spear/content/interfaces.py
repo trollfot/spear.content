@@ -3,6 +3,7 @@
 from zope.schema import TextLine, Text
 from zope.interface import Interface, Attribute
 from zope.component.interfaces import IFactory
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 
 class IRoughCarving(Interface):
@@ -18,7 +19,7 @@ class IRoughCarving(Interface):
         )
 
 
-class ICarving(Interface):
+class ICarving(IAttributeAnnotatable):
     """Marker interface for Flint contents.
     """
     meta_type = Attribute("The meta_type of the object")
