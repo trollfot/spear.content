@@ -50,6 +50,8 @@ class ISpearForm(Interface):
 class IAddSpear(ISpearForm):
     """Marker interface.
     """
+    carver = Attribute("Factory if the desired type.")
+    container = Attribute("Container where the content will be created.")
 
 
 class IEditSpear(ISpearForm):

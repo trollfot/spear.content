@@ -35,6 +35,10 @@ class AddSpear(grok.AddForm):
         return self.context.getPhysicalPath()
 
     @CachedProperty
+    def container(self):
+        return aq_parent(aq_inner(self.context))
+
+    @CachedProperty
     def label(self):
         return self.carver.factory.portal_type
 
@@ -58,22 +62,19 @@ class AddSpear(grok.AddForm):
     @grok.action(_(u"label_cancel", default=u"Cancel"),
                  validator=null_validator, name=u'cancel')
     def handle_cancel_action(self, *args, **data):
-        parent = aq_parent(aq_inner(self.context))
-        self.request.response.redirect(parent.absolute_url())
+        self.request.response.redirect(self.container.absolute_url())
 
     def create(self, data):
-        container = aq_parent(aq_inner(self.context))
-        chooser = INameChooser(container)
+        chooser = INameChooser(self.container)
         obj = self.carver(id=u"temporary")
         utils.applyChanges(obj, self.form_fields, data)
-        oid = chooser.chooseName(obj.title, container)
+        oid = chooser.chooseName(obj.title, self.container)
         obj.id = oid
         return obj
 
     def add(self, content):
-        container = aq_parent(aq_inner(self.context))
-        container._setObject(content.id, content)
-        obj = container._getOb(content.id)
+        self.container._setObject(content.id, content)
+        obj = self.container._getOb(content.id)
         notify(ObjectModifiedEvent(obj))
         return obj
 
