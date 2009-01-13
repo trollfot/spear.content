@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from five import grok
+from spear.ids import IUniqueObjectId
 from zope.interface import implements
 from plone.app.content.item import Item
 from plone.app.content.container import Container
@@ -20,6 +21,9 @@ class BaseSpear(object):
     @property
     def meta_type(self):
         return NotImplementedError("""You must provide your meta_type""")
+
+    def UID(self):
+        return IUniqueObjectId(self).UID()
 
     def getId(self):
         return self.id
