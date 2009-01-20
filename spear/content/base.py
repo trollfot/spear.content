@@ -5,6 +5,8 @@ from spear.ids import IUniqueObjectId
 from zope.interface import implements
 from plone.app.content.item import Item
 from plone.app.content.container import Container
+from Products.CMFCore.PortalContent import PortalContent
+from Products.CMFCore.PortalFolder import PortalFolderBase
 
 from directives import schema
 from interfaces import ICarving, IRoughCarving
@@ -37,16 +39,22 @@ class SpearQuiver(BaseSpear, Container):
     Merely a folderish content type.
     """
     grok.baseclass()
-    
+
+    # ZMI Tabs. Plone content doesn't do it.
+    manage_options = PortalFolderBase.manage_options
+                      
     def __init__(self, id, **kwargs):
         BaseSpear.__init__(self, id)
-
+        
 
 class FlintSpear(BaseSpear, Item):
     """A spear with a flint head.
     Explictly, a contentish type.
     """
     grok.baseclass()
+
+    # ZMI Tabs. Plone content doesn't do it.
+    manage_options = PortalContent.manage_options
 
     def __init__(self, id, **kwargs):
         BaseSpear.__init__(self, id)

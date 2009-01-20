@@ -6,11 +6,12 @@ import adapter
 import grokcore.security
 import grokcore.component
 
-from directives import schema
-from zope.formlib import form
 from zope import component
+from zope.formlib import form
 from zope.interface import classImplements
 from zope.schema.fieldproperty import FieldProperty
+
+from directives import schema
 from Products.Five.fiveconfigure import registerClass
 from grokcore.component.meta import default_provides
 
