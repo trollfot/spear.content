@@ -2,7 +2,7 @@
 
 from zope.schema import TextLine, Text
 from zope.interface import Interface, Attribute
-from zope.component.interfaces import IFactory
+from zope.component.interfaces import IFactory, IObjectEvent
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 
@@ -61,6 +61,11 @@ class IEditSpear(ISpearForm):
 
 class IViewSpear(Interface):
     """Marker interface.
+    """
+
+
+class ISpearAddedEvent(IObjectEvent):
+    """Interface for the adding event.
     """
 
 

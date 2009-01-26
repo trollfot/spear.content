@@ -12,6 +12,7 @@ from zope.interface import classImplements
 from zope.schema.fieldproperty import FieldProperty
 
 from directives import schema
+from Globals import InitializeClass as initializeClass
 from Products.Five.fiveconfigure import registerClass
 from grokcore.component.meta import default_provides
 
@@ -34,6 +35,7 @@ class ContentTypeGrokker(martian.ClassGrokker):
             if not iface.providedBy(class_):
                 classImplements(class_, iface)
 
+        initializeClass(class_)
         registerClass(config, class_, class_.meta_type, require)
         return True
 

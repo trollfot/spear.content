@@ -23,6 +23,12 @@ from zope.cachedescriptors.property import CachedProperty
 grok.templatedir("templates")
 
 
+class SpearAddedEvent(ObjectModifiedEvent):
+    """A spear item has been added.
+    """
+    implements(spear.ISpearAddedEvent)
+
+
 class AddSpear(grok.AddForm):
     grok.name("spear.add")
     grok.context(IAdding)
@@ -75,7 +81,7 @@ class AddSpear(grok.AddForm):
     def add(self, content):
         self.container._setObject(content.id, content)
         obj = self.container._getOb(content.id)
-        notify(ObjectModifiedEvent(obj))
+        notify(SpearAddedEvent(obj))
         return obj
 
 
