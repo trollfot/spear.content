@@ -27,22 +27,51 @@ The particularity of grok and spear, is to provide explicit syntax to extend
 and enhance your components. Spear being a content type centric system, it
 logically provide elements to define... content types. These elements are
 called directives. In Spear, they are class-level, meaning they are located
-inside the class you want to define. There are 3 major directives.
+inside the class you want to define. There are 2 major directives.
+
+
+====
+Name
+====
+
+`name` directive is used to define the component's meta_type and portal_type.
+meta_type is the zope2 information needed to register a class. portal_type is
+used either by Plone and CMF. `name` takes an ASCII-only string as a value.
+
+  >>> foo.portal_type
+  'DummyContent'
+  >>> foo.portal_type == foo.meta_type
+  True
+
 
 ======
 Schema
 ======
 
-Schema directive explicitly bind a schema to a content type. A schema is a
-zope3 interface containing fields. The schema directives takes 1 or several
+`schema` directive explicitly bind a schema to a content type. A schema is a
+zope3 interface containing fields. The `schema` directives takes 1 or several
 interfaces as arguments. If schema directive is not provided, a base one is
 used : IBaseSchema, defined in spear.content.interfaces.
+
+  >>> spear.IBaseSchema.providedBy(foo)
+  True
+
 
   >>> foo = SingleSchemaContent('bar')
   >>> ISchema.providedBy(foo)
   True
+  >>> spear.IBaseSchema.providedBy(foo)
+  False
   >>> foo.something
   u'Nothing here... fill me !'
+  >>> foo.something = u'A normal string field!'
+  >>> foo.something
+  u'A normal string field!'
+  >>> foo.something = 1
+  Traceback (most recent call last):
+  ...
+  WrongType: (1, <type 'unicode'>)
+
 
   >>> foo = MultipleSchemaContent('bar')
   >>> ISchema.providedBy(foo) and IAnotherSchema.providedBy(foo)
@@ -70,8 +99,7 @@ class ISchema(Interface):
         title = u"A line field",
         description = u"Something wild !",
         default = u"Nothing here... fill me !",
-        required = True
-        )
+        required = True)
 
 
 class SingleSchemaContent(spear.Content):
@@ -83,8 +111,7 @@ class IAnotherSchema(Interface):
     something_else = zope.schema.Int(
         title = u"An integer",
         default = 42,
-        required = True
-        )
+        required = True)
 
 
 class MultipleSchemaContent(spear.Content):
