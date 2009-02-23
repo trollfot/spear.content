@@ -1,12 +1,15 @@
 """
-Grokking the provided code will get us started.
+Spear is a small framework based on grok and plone, that provides you
+easy tools to create custom content types. It focuses on the concise code,
+the explicit behavior and the high flexibility.
+
+First, we need our components to be read by grok, to get us started.
 
   >>> testing.grok(__name__)
 
-Spear contents are very simple to create. You only need to provide an id.
-The concept is simple: you content type class will be read at zope startup.
-All the directives will then be applied to your class and you'll get an
-improved object.
+Spear content types are very simple to create. They only need an id.
+Out of the box, they provide a specific interface that differenciate them
+from the crowd of the other plone contents.
 
   >>> i_need_id = Dummy()
   Traceback (most recent call last):
@@ -20,9 +23,20 @@ improved object.
   >>> spear.IBaseContent.providedBy(foo)
   True
 
-Now, let's have a look at what the shipped directive bring us.
-This directive called `schema` that allows us to automatically
-create the attribute from the given interfaces and to implement them.
+The particularity of grok and spear, is to provide explicit syntax to extend
+and enhance your components. Spear being a content type centric system, it
+logically provide elements to define... content types. These elements are
+called directives. In Spear, they are class-level, meaning they are located
+inside the class you want to define. There are 3 major directives.
+
+======
+Schema
+======
+
+Schema directive explicitly bind a schema to a content type. A schema is a
+zope3 interface containing fields. The schema directives takes 1 or several
+interfaces as arguments. If schema directive is not provided, a base one is
+used : IBaseSchema, defined in spear.content.interfaces.
 
   >>> foo = SingleSchemaContent('bar')
   >>> ISchema.providedBy(foo)
@@ -48,7 +62,7 @@ import five.grok.testing as testing
 class Dummy(spear.Content):
     """A very simple content
     """
-    portal_type = meta_type = 'DummyContent'
+    spear.name('DummyContent')
 
 
 class ISchema(Interface):
@@ -61,8 +75,8 @@ class ISchema(Interface):
 
 
 class SingleSchemaContent(spear.Content):
+    spear.name('SimpleContent')
     spear.schema(ISchema)
-    portal_type = meta_type = 'SimpleContent'
     
 
 class IAnotherSchema(Interface):
@@ -74,5 +88,6 @@ class IAnotherSchema(Interface):
 
 
 class MultipleSchemaContent(spear.Content):
+    spear.name('LessSimpleContent')
     spear.schema(ISchema, IAnotherSchema)
-    portal_type = meta_type = 'LessSimpleContent'
+    
