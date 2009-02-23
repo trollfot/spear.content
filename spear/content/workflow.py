@@ -2,11 +2,11 @@
 
 from five import grok
 from Acquisition import aq_base
-from interfaces import ICarving
-from spear.content.interfaces import ISpearAddedEvent
+from interfaces import IBaseContent
+from spear.content.interfaces import IContentAddedEvent
 
 
-@grok.subscribe(ICarving, ISpearAddedEvent)
+@grok.subscribe(IBaseContent, IContentAddedEvent)
 def securityOnModification(content, event):
     if hasattr(aq_base(content), 'notifyWorkflowCreated'):
         content.notifyWorkflowCreated()

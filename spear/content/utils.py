@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import spear.content
 from zope import component
 from zope.interface import implementedBy, providedBy
+from spear.content.interfaces import IFieldUpdate
 
 
 def queryClassMultiAdapter(adapts, interface, name=u''):
@@ -42,7 +42,7 @@ def applyChanges(context, form_fields, data, adapters=None):
             changed = True
             field.set(adapter, newvalue)
             for handler in component.subscribers(
-                (adapter, field), spear.content.ISpearFieldUpdate
+                (adapter, field), IFieldUpdate
                 ):
                 handler.update()
 

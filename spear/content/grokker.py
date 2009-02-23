@@ -18,7 +18,7 @@ from grokcore.component.meta import default_provides
 
 
 class ContentTypeGrokker(martian.ClassGrokker):
-    martian.component(base.BaseSpear)
+    martian.component(base.BaseContent)
     martian.directive(schema)
     martian.directive(grokcore.security.require,
                       default="cmf.AddPortalContent")

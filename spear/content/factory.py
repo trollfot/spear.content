@@ -2,13 +2,13 @@
 
 from five import grok
 from directives import schema
-from interfaces import ICarvingWorkshop
+from interfaces import IFactory
 from zope.cachedescriptors.property import CachedProperty
 
 
-class SpearFactory(grok.GlobalUtility):
+class Factory(grok.GlobalUtility):
     grok.baseclass()
-    grok.implements(ICarvingWorkshop)
+    grok.implements(IFactory)
 
     @CachedProperty
     def schema(self):
@@ -16,8 +16,8 @@ class SpearFactory(grok.GlobalUtility):
         return schema.bind().get(context)
 
     @CachedProperty
-    def factory(self):
+    def klass(self):
         return grok.context.bind().get(self)
 
     def __call__(self, *args, **kw):
-        return self.factory(*args, **kw)
+        return self.klass(*args, **kw)

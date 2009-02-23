@@ -2,16 +2,16 @@
 
 from five import grok
 from zope.interface import Interface
-from interfaces import ICustomCarving
+from interfaces import ICustomFields
 
 
 class SubscriptionAdapter(object):
     pass
 
 
-class CustomSpear(grok.MultiAdapter):
+class CustomFields(grok.MultiAdapter):
     grok.adapts(Interface, grok.Form)
-    grok.provides(ICustomCarving)
+    grok.provides(ICustomFields)
     grok.baseclass()
 
     def __init__(self, context, form):

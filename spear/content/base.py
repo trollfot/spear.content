@@ -3,19 +3,19 @@
 from five import grok
 from spear.ids import IUniqueObjectId
 from zope.interface import implements
-from plone.app.content.item import Item
-from plone.app.content.container import Container
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.PortalFolder import PortalFolderBase
+from plone.app.content.item import Item as PloneItem
+from plone.app.content.container import Container as PloneContainer
 
+import interfaces
 from directives import schema
-from interfaces import ICarving, IRoughCarving
 
 
-class BaseSpear(object):
+class BaseContent(object):
     grok.baseclass()
-    implements(ICarving)
-    schema(IRoughCarving)
+    implements(interfaces.IBaseContent)
+    schema(interfaces.IBaseSchema)
     
     def __init__(self, id, **kwargs):
         self.id = id
@@ -34,27 +34,27 @@ class BaseSpear(object):
         return getattr(self, "description", u"")
     
 
-class SpearQuiver(BaseSpear, Container):
-    """ A case to store your spears.
-    Merely a folderish content type.
+class Container(BaseContent, PloneContainer):
+    """A spear folderish content type.
     """
     grok.baseclass()
+    implements(interfaces.IContainer)
 
     # ZMI Tabs. Plone content doesn't do it.
     manage_options = PortalFolderBase.manage_options
                       
     def __init__(self, id, **kwargs):
-        BaseSpear.__init__(self, id)
+        BaseContent.__init__(self, id)
         
 
-class FlintSpear(BaseSpear, Item):
-    """A spear with a flint head.
-    Explictly, a contentish type.
+class Content(BaseContent, PloneItem):
+    """A spear content type.
     """
     grok.baseclass()
+    implements(interfaces.IContent)
 
     # ZMI Tabs. Plone content doesn't do it.
     manage_options = PortalContent.manage_options
 
     def __init__(self, id, **kwargs):
-        BaseSpear.__init__(self, id)
+        BaseContent.__init__(self, id)

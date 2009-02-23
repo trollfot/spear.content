@@ -6,7 +6,7 @@ from zope.component.interfaces import IFactory, IObjectEvent
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 
-class IRoughCarving(Interface):
+class IBaseSchema(Interface):
     
     title = TextLine(
         title = u"Title",
@@ -19,56 +19,66 @@ class IRoughCarving(Interface):
         )
 
 
-class ICarving(IAttributeAnnotatable):
+class IBaseContent(IAttributeAnnotatable):
     """Marker interface for Flint contents.
     """
     meta_type = Attribute("The meta_type of the object")
     portal_type = Attribute("The portal type of the object")
 
 
-class ICarvingWorkshop(IFactory):
+class IContent(IBaseContent):
+    """Marker interface for contentish spear objects.
+    """
+
+
+class IContainer(IBaseContent):
+    """Marker interface for folderish spear objects.
+    """
+
+
+class IFactory(IFactory):
     schema = Attribute("Schema interface")
     factory = Attribute("Class used as a factory")
 
 
-class ICustomCarving(Interface):
+class ICustomFields(Interface):
     def generate_form_fields(fields=None):
         """returns a filtered and customized instance of FormFields.
         """
 
 
-class ISpearFieldUpdate(Interface):
+class IFieldUpdate(Interface):
     field = Attribute("The field that has been updated.")
     object = Attribute("The field context.")
     
 
-class ISpearForm(Interface):
+class IForm(Interface):
     """Marks the forms that alter contents.
     """
 
 
-class IAddSpear(ISpearForm):
+class IAddForm(IForm):
     """Marker interface.
     """
-    carver = Attribute("Factory if the desired type.")
+    klass = Attribute("The desired content type class.")
     container = Attribute("Container where the content will be created.")
 
 
-class IEditSpear(ISpearForm):
+class IEditForm(IForm):
     """Marker interface.
     """
 
 
-class IViewSpear(Interface):
+class IDisplayView(Interface):
     """Marker interface.
     """
 
 
-class ISpearAddedEvent(IObjectEvent):
+class IContentAddedEvent(IObjectEvent):
     """Interface for the adding event.
     """
 
 
-__all__ = ['IRoughCarving', 'ICarving', 'ICarvingWorkshop', 'ISpearForm',
-           'ICustomCarving', 'IAddSpear', 'IViewSpear', 'IEditSpear',
-           'ISpearFieldUpdate']
+__all__ = ['IBaseSchema', 'IBaseContent', 'IContent', 'IContainer',
+           'IForm', 'IAddForm', 'IDisplayView', 'IEditForm',
+           'IFactory', 'ICustomFields', 'IFieldUpdate']

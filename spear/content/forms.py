@@ -23,17 +23,17 @@ from zope.cachedescriptors.property import CachedProperty
 grok.templatedir("templates")
 
 
-class SpearAddedEvent(ObjectModifiedEvent):
-    """A spear item has been added.
+class ContentAddedEvent(ObjectModifiedEvent):
+    """An item has been added.
     """
-    implements(spear.ISpearAddedEvent)
+    implements(spear.IContentAddedEvent)
 
 
-class AddSpear(grok.AddForm):
+class AddForm(grok.AddForm):
     grok.name("spear.add")
     grok.context(IAdding)
     grok.template("add")
-    implements(spear.IAddSpear)
+    implements(spear.IAddForm)
 
     form_name = _(u"Add")
 
@@ -46,18 +46,17 @@ class AddSpear(grok.AddForm):
 
     @CachedProperty
     def label(self):
-        return self.carver.factory.portal_type
+        return self.factory.klass.portal_type
 
     @CachedProperty
-    def carver(self):
-        return getUtility(spear.ICarvingWorkshop,
-                          name=self.context.contentName)
+    def factory(self):
+        return getUtility(spear.IFactory, name=self.context.contentName)
 
     @CachedProperty
     def form_fields(self):
-        fields = form.FormFields(*self.carver.schema)
-        custom = utils.queryClassMultiAdapter((self.carver.factory, self),
-                                              spear.ICustomCarving)
+        fields = form.FormFields(*self.factory.schema)
+        custom = utils.queryClassMultiAdapter((self.factory.klass, self),
+                                              spear.ICustomFields)
         return custom and custom.generate_form_fields(fields) or fields
 
     @grok.action(_(u"label_save", default=u"Save"))
@@ -72,7 +71,7 @@ class AddSpear(grok.AddForm):
 
     def create(self, data):
         chooser = INameChooser(self.container)
-        obj = self.carver(id=u"temporary")
+        obj = self.factory(id=u"temporary")
         utils.applyChanges(obj, self.form_fields, data)
         oid = chooser.chooseName(obj.title, self.container)
         obj.id = oid
@@ -81,16 +80,16 @@ class AddSpear(grok.AddForm):
     def add(self, content):
         self.container._setObject(content.id, content)
         obj = self.container._getOb(content.id)
-        notify(SpearAddedEvent(obj))
+        notify(ContentAddedEvent(obj))
         return obj
 
 
-class ViewSpear(grok.DisplayForm):
+class DisplayView(grok.DisplayForm):
     grok.name("base_view")
-    grok.context(spear.ICarving)
+    grok.context(spear.IBaseContent)
     grok.template("view")
     grok.require("zope2.View")
-    implements(spear.IViewSpear)
+    implements(spear.IDisplayView)
 
     @CachedProperty
     def label(self):
@@ -100,16 +99,17 @@ class ViewSpear(grok.DisplayForm):
     def form_fields(self):
         iface = schema.bind().get(self.context)
         fields = form.FormFields(*iface)
-        custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
-        return custom and custom.generate_form_fields(fields) or fields.omit('title')
+        custom = queryMultiAdapter((self.context, self), spear.ICustomFields)
+        return (custom and custom.generate_form_fields(fields)
+                or fields.omit('title'))
 
 
-class EditSpear(grok.EditForm):
+class EditForm(grok.EditForm):
     grok.name("edit")
-    grok.context(spear.ICarving)
+    grok.context(spear.IBaseContent)
     grok.template("edit")
     grok.require("cmf.ModifyPortalContent")
-    implements(spear.IEditSpear)
+    implements(spear.IEditForm)
 
     form_name = _(u"Edit")
 
@@ -121,12 +121,12 @@ class EditSpear(grok.EditForm):
     def form_fields(self):
         iface = schema.bind().get(self.context)
         fields = form.FormFields(*iface)
-        custom = queryMultiAdapter((self.context, self), spear.ICustomCarving)
+        custom = queryMultiAdapter((self.context, self), spear.ICustomFields)
         return custom and custom.generate_form_fields(fields) or fields
 
     def update(self):
         notify(plone.EditBegunEvent(self.context))
-        super(EditSpear, self).update()
+        grok.EditForm.update(self)
 
     @grok.action(_(u"label_cancel", default=u"Cancel"),
                  validator=null_validator, name=u'cancel')
