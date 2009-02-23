@@ -20,23 +20,25 @@ from grokcore.component.meta import default_provides
 class ContentTypeGrokker(martian.ClassGrokker):
     martian.component(base.BaseContent)
     martian.directive(schema)
+    martian.directive(grokcore.component.name)
     martian.directive(grokcore.security.require,
                       default="cmf.AddPortalContent")
 
-    def execute(self, class_, config, schema, require, **kw):
+    def execute(self, class_, config, schema, name, require, **kw):
 
         formfields = form.FormFields(*schema)
         for formfield in formfields:
-            name = formfield.__name__
-            if not hasattr(class_, name):
-                setattr(class_, name, FieldProperty(formfield.field))
+            fname = formfield.__name__
+            if not hasattr(class_, fname):
+                setattr(class_, fname, FieldProperty(formfield.field))
 
         for iface in schema:
             if not iface.providedBy(class_):
                 classImplements(class_, iface)
 
+        class_.meta_type = class_.portal_type = name
         initializeClass(class_)
-        registerClass(config, class_, class_.meta_type, require)
+        registerClass(config, class_, name, require)
         return True
 
 

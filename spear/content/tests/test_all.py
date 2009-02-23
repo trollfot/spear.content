@@ -30,6 +30,10 @@ def test_suite():
             module='spear.content.tests.item',
             setUp=setUp, tearDown=testing.tearDown),
 
+        doctestunit.DocTestSuite(
+            module='spear.content.tests.forms',
+            setUp=setUp, tearDown=testing.tearDown),
+
         ])
 
 

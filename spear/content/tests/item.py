@@ -30,7 +30,6 @@ called directives. In Spear, they are class-level, meaning they are located
 inside the class you want to define. There are 2 major directives.
 
 
-====
 Name
 ====
 
@@ -44,7 +43,6 @@ used either by Plone and CMF. `name` takes an ASCII-only string as a value.
   True
 
 
-======
 Schema
 ======
 
