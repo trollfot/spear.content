@@ -5,6 +5,7 @@ from spear.ids import IUniqueObjectId
 from zope.interface import implements
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.PortalFolder import PortalFolderBase
+from Products.CMFDefault import DublinCore
 from plone.app.content.item import Item as PloneItem
 from plone.app.content.container import Container as PloneContainer
 
@@ -19,6 +20,9 @@ class BaseContent(object):
     
     def __init__(self, id, **kwargs):
         self.id = id
+        DublinCore.DefaultDublinCoreImpl.__init__(
+            self, title=DublinCore._marker
+            )
 
     @property
     def meta_type(self):
