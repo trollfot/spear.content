@@ -73,7 +73,7 @@ class AddForm(grok.AddForm):
         chooser = INameChooser(self.container)
         obj = self.factory(id=u"temporary")
         utils.applyChanges(obj, self.form_fields, data)
-        oid = chooser.chooseName(obj.title, self.container)
+        oid = chooser.chooseName(obj.title, obj)
         obj.id = oid
         return obj
 
