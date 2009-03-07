@@ -20,7 +20,6 @@ def setUp(test=None):
     zcml.load_config('configure.zcml', package=five.grok)
     zcml.load_config('configure.zcml', package=spear.ids)
     zcml.load_config('configure.zcml', package=spear.content)
-    zcml.load_config('configure.zcml', package=spear.content.tests)
 
 
 def test_suite():

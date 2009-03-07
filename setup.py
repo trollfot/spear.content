@@ -26,7 +26,6 @@ setup(name = name,
           'setuptools',
           'five.grok',
           'spear.ids',
-          'grokcore.component'
       ],
       classifiers = [
         'Development Status :: 4 - Beta',
