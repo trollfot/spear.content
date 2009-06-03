@@ -127,11 +127,6 @@ class EditForm(grok.EditForm):
     def update(self):
         notify(plone.EditBegunEvent(self.context))
         grok.EditForm.update(self)
-
-    @grok.action(_(u"label_cancel", default=u"Cancel"),
-                 validator=null_validator, name=u'cancel')
-    def handle_cancel_action(self, *args, **data):
-        self.request.response.redirect(self.context.absolute_url())
         
     @grok.action(_(u"label_save", default="Save"))
     def handle_save_action(self, *args, **data):
@@ -147,3 +142,8 @@ class EditForm(grok.EditForm):
         url = getMultiAdapter((self.context, self.request),
                               name='absolute_url')()
         self.request.response.redirect(url)
+
+    @grok.action(_(u"label_cancel", default=u"Cancel"),
+                 validator=null_validator, name=u'cancel')
+    def handle_cancel_action(self, *args, **data):
+        self.request.response.redirect(self.context.absolute_url())
