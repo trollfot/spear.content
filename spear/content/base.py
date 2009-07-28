@@ -18,7 +18,7 @@ class BaseContent(object):
     grok.baseclass()
     implements(interfaces.IBaseContent)
     schema(interfaces.IBaseSchema)
-    
+
     def __init__(self, id, **kwargs):
         self.id = id
         now = DateTime()
@@ -39,7 +39,7 @@ class BaseContent(object):
 
     def SearchableText(self):
         return getattr(self, "description", u"")
-    
+
 
 class Container(BaseContent, PloneContainer):
     """A spear folderish content type.
@@ -49,10 +49,10 @@ class Container(BaseContent, PloneContainer):
 
     # ZMI Tabs. Plone content doesn't do it.
     manage_options = PortalFolderBase.manage_options
-                      
+
     def __init__(self, id, **kwargs):
         BaseContent.__init__(self, id)
-        
+
 
 class Content(BaseContent, PloneItem):
     """A spear content type.
