@@ -40,6 +40,12 @@ class BaseContent(object):
     def SearchableText(self):
         return getattr(self, "description", u"")
 
+    def Description(self):
+        # There is a nice bug^W feature of Plone nowdays that if you
+        # have a 404 you need a Description method on the parent
+        # which gives you a string.
+        return getattr(self, "description", u"")
+
 
 class Container(BaseContent, PloneContainer):
     """A spear folderish content type.
