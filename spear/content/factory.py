@@ -10,6 +10,8 @@ class Factory(grok.GlobalUtility):
     grok.baseclass()
     grok.implements(IFactory)
 
+    addform = "spear.add"
+
     @CachedProperty
     def schema(self):
         context = grok.context.bind().get(self)
