@@ -4,89 +4,91 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="plone">
-<head>
-</head>
+  <head>
+  </head>
 
-<body>
-<div metal:fill-slot="main">
-  <form action="."
-	tal:attributes="action request/URL;
-			class string:kssattr-formname-${view/__name__}"
-	method="post"
-	enctype="multipart/form-data"
-	id="zc.page.browser_form">
-    
-    <div id="viewspace">
-      
-      <tal:status define="status view/status" condition="status">
-	<dl class="portalMessage error"
-	    tal:condition="view/errors">
-	  <dt i18n:translate="">
-	    Error
-	  </dt>
-	  <dd tal:content="status" />
-	</dl>
-	
-	<dl class="portalMessage info"
-	    tal:condition="not: view/errors">
-	  <dt i18n:translate="">
-	    Info
-	  </dt>
-	  <dd tal:content="status" />
-	</dl>
-      </tal:status>
+  <body>
+    <div metal:fill-slot="main">
+      <form action="."
+            tal:attributes="action request/URL;
+                            class string:kssattr-formname-${view/__name__}"
+            method="post"
+            enctype="multipart/form-data"
+            id="zc.page.browser_form">
 
-      <h1 class="documentFirstHeading"
-	  tal:condition="view/label" tal:content="view/label" />
+        <div id="viewspace">
 
-      <p class="documentDescription"
-	 tal:content="view/description|nothing" />
+          <tal:status define="status view/status" condition="status">
+            <dl class="portalMessage error"
+                tal:condition="view/errors">
+              <dt i18n:translate="">
+                Error
+              </dt>
+              <dd tal:content="status" />
+            </dl>
 
-      <div id="edition-fields">
-      <tal:block tal:repeat="widget view/widgets">
-	<div class="field"
-	     tal:define="description widget/hint;
-			 error widget/error;
-			 normalized_name python:widget.name.replace('.', '-');
-			 fieldname_class string:kssattr-fieldname-${widget/name};
-			 error_class python:error and ' error' or ' '"
-	     tal:attributes="id string:formfield-${normalized_name};
-			     class string:field ${fieldname_class}${error_class}">
-	  <label tal:condition="widget/label"
-		 tal:attributes="for widget/name">
-	    <span i18n:translate=""
-		  tal:content="widget/label">label</span>
-	  </label>
-	  <span class="fieldRequired" title="Required"
-		tal:condition="widget/required"
-		i18n:translate="label_required"
-		i18n:attributes="title title_required;">
-	    (Required)
-	  </span>
-	  <div class="formHelp"
-	       i18n:translate=""
-	       tal:content="description"
-	       tal:condition="description"
-	       >field description</div>
-	  <div class="fieldErrorBox" tal:content="error">
-	    The Error
-	  </div>
-	  <div class="widget formlibInlineValidation" tal:content="structure widget">
-	  <input type="text" /></div>
-	</div>
-      </tal:block>
-      </div>
-      
-      <div id="actionsView">
-	<span class="actionButtons"
-	      tal:condition="view/availableActions">
-	  <input tal:repeat="action view/actions"
-		 tal:replace="structure action/render"
-		 />
-	</span>
-      </div>
+            <dl class="portalMessage info"
+                tal:condition="not: view/errors">
+              <dt i18n:translate="">
+                Info
+              </dt>
+              <dd tal:content="status" />
+            </dl>
+          </tal:status>
+
+          <h1 class="documentFirstHeading"
+              tal:condition="view/label" tal:content="view/label" />
+
+          <p class="documentDescription"
+             tal:content="view/description|nothing" />
+
+          <div id="edition-fields">
+            <tal:block tal:repeat="widget view/widgets">
+              <div class="field"
+                   tal:define="description widget/hint;
+                               error widget/error;
+                               normalized_name python:widget.name.replace('.', '-');
+                               fieldname_class string:kssattr-fieldname-${widget/name};
+                               error_class python:error and ' error' or ' '"
+                   tal:attributes="id string:formfield-${normalized_name};
+                                   class string:field ${fieldname_class}${error_class}">
+                <label tal:condition="widget/label"
+                       tal:attributes="for widget/name">
+                  <span i18n:translate=""
+                        tal:content="widget/label">label</span>
+                </label>
+                <span class="fieldRequired" title="Required"
+                      tal:condition="widget/required"
+                      i18n:translate="label_required"
+                      i18n:attributes="title title_required;">
+                  (Required)
+                </span>
+                <div class="formHelp"
+                     i18n:translate=""
+                     tal:content="description"
+                     tal:condition="description"
+                     >field description</div>
+                <div class="fieldErrorBox" tal:content="error">
+                  The Error
+                </div>
+                <div class="widget formlibInlineValidation"
+                     tal:content="structure widget">
+                  <input type="text" /></div>
+              </div>
+            </tal:block>
+          </div>
+
+          <div id="actionsView">
+            <span class="actionButtons"
+                  tal:condition="view/availableActions">
+              <input tal:repeat="action view/actions"
+                     tal:replace="structure action/render"
+                     />
+            </span>
+          </div>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
 
-</body></html>
+  </body>
+</html>
