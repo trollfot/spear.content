@@ -4,6 +4,8 @@ from five import grok
 from DateTime import DateTime
 from spear.ids import IUniqueObjectId
 from zope.interface import implements
+from Products.Archetypes.OrderedBaseFolder import (
+    OrderedContainer as BaseOrderedContainer)
 from Products.CMFDefault import DublinCore
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.PortalFolder import PortalFolderBase
@@ -58,6 +60,21 @@ class Container(BaseContent, PloneContainer):
 
     def __init__(self, id, **kwargs):
         BaseContent.__init__(self, id)
+
+
+class OrderedContainer(BaseOrderedContainer, Container):
+    """An ordered spear folderish content type.
+    """
+
+    def manage_renameObject(self, id, new_id, REQUEST=None):
+        """Restore reorder method.
+        """
+        objidx = self.getObjectPosition(id)
+        method = spear.Container.manage_renameObject
+        result = method(self, id, new_id, REQUEST)
+        self.moveObject(new_id, objidx)
+
+        return result
 
 
 class Content(BaseContent, PloneItem):
