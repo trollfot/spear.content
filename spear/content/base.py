@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from five import grok
 from DateTime import DateTime
-from spear.ids import IUniqueObjectId
-from zope.interface import implements
 from Products.Archetypes.OrderedBaseFolder import (
     OrderedContainer as BaseOrderedContainer)
-from Products.CMFDefault import DublinCore
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.PortalFolder import PortalFolderBase
-from plone.app.content.item import Item as PloneItem
-from plone.app.content.container import Container as PloneContainer
+from Products.CMFDefault import DublinCore
 
-import interfaces
-from directives import schema
+from five import grok
+from plone.app.content.container import Container as PloneContainer
+from plone.app.content.item import Item as PloneItem
+from zope.interface import implements
+
+from spear.content import interfaces
+from spear.content.directives import schema
+from spear.ids import IUniqueObjectId
 
 
 class BaseContent(object):

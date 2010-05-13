@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 
+from Acquisition import aq_parent, aq_inner
 from five import grok
 from plone.app.form import base as plone
 from plone.app.form.validators import null_validator
-from Acquisition import aq_parent, aq_inner
-from Products.CMFPlone import PloneMessageFactory as _
 
-import utils
-import interfaces as spear
-from utils import queryClassMultiAdapter
-from directives import schema
-
-from zope.event import notify
-from zope.formlib import form
-from zope.interface import implements
-from zope.lifecycleevent import ObjectModifiedEvent
-from zope.component import getMultiAdapter, queryMultiAdapter, getUtility
 from zope.app.container.interfaces import INameChooser, IAdding
 from zope.cachedescriptors.property import CachedProperty
+from zope.component import getMultiAdapter, queryMultiAdapter, getUtility
+from zope.event import notify
+from zope.formlib import form
+from zope.i18nmessageid import MessageFactory
+from zope.interface import implements
+from zope.lifecycleevent import ObjectModifiedEvent
+
+from spear.content import utils
+from spear.content import interfaces as spear
+from spear.content.directives import schema
+
+_ = MessageFactory("plone")
 
 
 grok.templatedir("templates")
@@ -63,7 +64,7 @@ class AddForm(grok.AddForm):
     def handle_save_action(self, *args, **data):
         obj = self.createAndAdd(data)
         self.request.response.redirect(obj.absolute_url())
-    
+
     @grok.action(_(u"label_cancel", default=u"Cancel"),
                  validator=null_validator, name=u'cancel')
     def handle_cancel_action(self, *args, **data):
@@ -127,7 +128,7 @@ class EditForm(grok.EditForm):
     def update(self):
         notify(plone.EditBegunEvent(self.context))
         grok.EditForm.update(self)
-        
+
     @grok.action(_(u"label_save", default="Save"))
     def handle_save_action(self, *args, **data):
         if utils.applyChanges(self.context, self.form_fields,
@@ -138,7 +139,7 @@ class EditForm(grok.EditForm):
         else:
             notify(plone.EditCancelledEvent(self.context))
             self.status = _(u"No changes")
-            
+
         url = getMultiAdapter((self.context, self.request),
                               name='absolute_url')()
         self.request.response.redirect(url)

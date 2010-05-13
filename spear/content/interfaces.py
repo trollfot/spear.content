@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from zope.schema import TextLine, Text
-from zope.interface import Interface, Attribute
-from zope.component.interfaces import IFactory, IObjectEvent
 from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.component.interfaces import IFactory, IObjectEvent
+from zope.i18nmessageid import MessageFactory
+from zope.interface import Interface, Attribute
+from zope.schema import TextLine, Text
+
+_ = MessageFactory("plone")
 
 
 class IBaseSchema(Interface):
-    
+
     title = TextLine(
-        title = u"Title",
-        required = True
-        )
+        title = _(u"Title"),
+        required = True)
 
     description = Text(
-        title = u"Description",
-        required = False
-        )
+        title = _(u"Description"),
+        required = False)
 
 
 class IBaseContent(IAttributeAnnotatable):
@@ -50,7 +51,7 @@ class ICustomFields(Interface):
 class IFieldUpdate(Interface):
     field = Attribute("The field that has been updated.")
     object = Attribute("The field context.")
-    
+
 
 class IForm(Interface):
     """Marks the forms that alter contents.
