@@ -4,7 +4,7 @@ from os.path import join
 name = 'spear.content'
 path = name.split('.') + ['version.txt']
 version = open(join(*path)).read().strip()
-readme = open("README.txt").read()
+readme = open("README.txt").read() + open("HISTORY.txt").read()
 history = ""
 
 setup(name = name,

@@ -1,0 +1,10 @@
+Changelog
+=========
+
+0.5 (2010/05/13)
+----------------
+
+* Use Plone translation for the default schema.
+* Add an OrderedContainer content base.
+* Ensure to always return an empty string when there is no description.
+
