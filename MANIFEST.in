@@ -1,0 +1,3 @@
+recursive-include spear *.pt *.py *.txt *.zcml
+include README.txt
+include HISTORY.txt
