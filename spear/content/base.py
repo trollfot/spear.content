@@ -71,7 +71,7 @@ class OrderedContainer(BaseOrderedContainer, Container):
         """Restore reorder method.
         """
         objidx = self.getObjectPosition(id)
-        method = spear.Container.manage_renameObject
+        method = Container.manage_renameObject
         result = method(self, id, new_id, REQUEST)
         self.moveObject(new_id, objidx)
 
