@@ -1,10 +1,11 @@
 Changelog
 =========
 
-0.7 (unreleased)
-----------------
+0.6.1 (2012/02/27)
+------------------
 
-* ...
+* Fix a type in base.py that created a bug when renaming content in an
+  ordered container.
 
 0.6 (2010/08/17)
 ----------------
